@@ -1,0 +1,17 @@
+.border{
+        
+    border: 2px solid transparent;
+    border-image: linear-gradient(to right, #FF66C4, #FF914D);
+    border-image-slice: 1;
+    border-radius: 10px;
+    
+    
+}
+.border:focus{
+border: none;
+}
+@media only screen and (max-width: 600px) {
+   Text{
+  visibility:hidden;
+   }
+  }
