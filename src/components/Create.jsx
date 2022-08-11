@@ -28,20 +28,26 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
+import { fetchUser } from "../utils/Fetchuser";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+const firebaseDb = getFirestore(firebaseApp);
 const Create = () => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [category, setcategory] = useState("Category");
   const [allow, setAllow] = useState("Public");
   const [videoAsset, setvideoAsset] = useState(null);
   const [loading, setloading] = useState(false);
   const [progress, setprogress] = useState(1);
+  const likes = 0;
   const [alert, setAlert] = useState("");
   const [alertStatus, setAlertStatus] = useState("");
   const [alertMsg, setAlertMsg] = useState("");
   const [alertIcon, setAlertIcon] = useState(null);
   const [caption, setCaption] = useState("");
   const storage = getStorage(firebaseApp);
-
+  const [userInfo] = fetchUser();
   const uploadVideo = (e) => {
     setloading(true);
     const videoFile = e.target.files[0];
@@ -68,7 +74,7 @@ const Create = () => {
   };
   useEffect(() => {
     console.log(videoAsset);
-  }, [title, category, caption, allow]);
+  }, [title, category, caption, allow, likes]);
   const deleteVideo = () => {
     const deleteRef = ref(storage, videoAsset);
     deleteObject(deleteRef)
@@ -86,8 +92,16 @@ const Create = () => {
         const data = {
           id: `${Date.now()}`,
           title: title,
+          userId: userInfo?.uid,
+          category: category,
+          videoUrl: videoAsset,
+          caption: caption,
+          likes:likes,
         };
+        await setDoc(doc(firebaseDb, "videos", `${Date.now()}`),data);
+        navigate("/", { replace: true });
       }
+      setloading(false);
     } catch (error) {
       console.log(error);
     }

@@ -5,11 +5,15 @@ import Navbar from "../components/Navbar";
 import VideoPin from "../components/VideoPin";
 import Search from "../components/Search";
 import Category from "../components/Category";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
 import { categories } from "../data";
+import { getFirestore } from "firebase/firestore";
+import { firebaseApp } from "../firebase-config";
+import { useEffect } from "react";
+import { getAllFeeds } from "../utils/fetchData";
+import { useState } from "react";
 const Home = ({ user }) => {
-  console.log(user);
   return (
     <>
       <Navbar user={user} />
@@ -23,7 +27,13 @@ const Home = ({ user }) => {
           {categories &&
             categories.map((data) => <Category key={data.id} data={data} />)}
         </Flex>
-        <Flex width={"95%"} px={4}>
+        <Flex
+          width={"95%"}
+          px={4}
+          justifyContent={"center"}
+          
+          paddingX={4}
+        >
           <Routes>
             <Route path="/" element={<Feed />} />
             <Route path="/category/:categoryId" element={<Feed />} />
